@@ -18,10 +18,10 @@ objp[:,:2] = np.mgrid[0:corner_x,0:corner_y].T.reshape(-1,2)
 objpoints = [] # 3d point in real world space
 jpegpoints = [] # 2d points in image plane.
 
-source_path = "C:\\Users\\chandan\\Downloads\\Compressed\\Photos" #Path location of Folder containing Images
+source_path = "./Img_Nokia3.1Plus" #Path location of Folder containing Images
 print('image found :',len(os.listdir(source_path)))
 
-images = glob.glob('C:\\Users\\chandan\\Downloads\\Compressed\\Photos\\*.jpg')    #*.jpg for all images in that folder
+images = glob.glob('./Img_Nokia3.1Plus/*.jpg')    #*.jpg for all images in that folder
 found = 0           #initialised 0 for first image in images
 for fname in images: # here, 10 can be changed to whatever number you like to choose
     jpeg = cv2.imread(fname) # capture frame by frame
@@ -58,7 +58,7 @@ print(rvecs)
 print("Translation Matrix")
 print(tvecs)
 # and save it to a .yaml file
-with open("calibration_matrix.yaml", "w")as f:
+with open("calibration_matrix_nokia.yaml", "w")as f:
     yaml.dump(data, f)
 
 #undistort image
