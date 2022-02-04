@@ -30,12 +30,12 @@ zw = []     #zw is z-axis coordinates array of image all points
 u  = []     #u is u axis coordinates of all image points
 v  = []     #v is v axis coordinates of all image points
 
-image2d_vectors1 = [[486,920], [526,927], [526,875], [448, 1007], [447,1033], [448,986]]     # 2d image coordinates [u,v] vector of all points
-realw_vectors1   = [[1, 1, 0], [2, 1, 0], [2, 2, 0], [2, 0, 2], [3, 0, 3], [1, 0, 1]]        # 3d real world coordinates [x,y,z] vector of all points
+image2d_vectors = [[486,920], [526,927], [526,875], [448, 1007], [447,1033], [448,986]]     # 2d image coordinates [u,v] vector of all points
+realw_vectors   = [[1, 1, 0], [2, 1, 0], [2, 2, 0], [2, 0, 2], [3, 0, 3], [1, 0, 1]]        # 3d real world coordinates [x,y,z] vector of all points
 
 # Normalize the vectors
-image2d_vectors = normalize(image2d_vectors1)
-realw_vectors   = normalize(realw_vectors1)
+# image2d_vectors = normalize(image2d_vectors)
+# realw_vectors   = normalize(realw_vectors)
 
 # T and U vectors
 # T = np.dot(np.array(image2d_vectors), LA.inv(np.array(image2d_vectors1)))
@@ -87,14 +87,18 @@ A = np.array(A)
 # Find the eigen vector corresponding to smallest eigen value
 target_matrix   = np.dot(A, A.T)
 values, vectors = LA.eig(target_matrix)
-smallest = vectors[np.argmin(values)].reshape(3, 4)
+P = vectors[np.argmin(values)].reshape(3, 4)
 
 # QR Factorization
-qr = smallest[:,:-1]
+qr = P[:,:-1]
 R, K = LA.qr(qr)
-trans = np.dot(LA.inv(K), smallest[:,-1])
+trans = np.dot(LA.inv(K), P[:,-1])
 print(f"Rotational Matrix is: \n{R}")
 print(f"K Matrix is: \n{K}")
 print(f"Translational Vector is{trans}")
 print(f"Focal length x and Focal length y: {K[0][0]}, {K[1][1]}")
 print(f"Ox and Oy: {K[0][-1]}, {K[1][-1]}")
+
+# Testing
+image_coordinates = np.dot(P, np.array([1, 1, 0, 1]))
+print(image_coordinates)
