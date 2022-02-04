@@ -1,4 +1,4 @@
-from cgitb import small
+import math
 import numpy as np
 from numpy import linalg as LA
 
@@ -25,14 +25,17 @@ realw_vectors = [[1, 1, 0], [2, 1, 0], [2, 2, 0], [2, 0, 2], [3, 0, 3], [1, 0, 1
 
 
 
-# A = np.diag((1, 2, 3, 4))
+A = np.diag((1, 2, 3, 4))
 
 target_matrix = np.dot(A, A.T)
 values, vectors = LA.eig(target_matrix)
 
-print(values, vectors)
+print(values)
+print(vectors)
 
 smallest = vectors[0]
-print(smallest.shape)
-# smallest = smallest.reshape(smallest.shape[0])
-# R, K = LA.qr(vectors[0])
+reshape_size = (int(math.sqrt(smallest.shape[0])), int(math.sqrt(smallest.shape[0])))
+smallest = smallest.reshape(reshape_size)
+print(smallest)
+R, K = LA.qr(smallest)
+print(R, K)
