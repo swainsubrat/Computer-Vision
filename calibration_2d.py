@@ -85,3 +85,12 @@ for fname in images:
      cv2.waitKey(0)
      
 cv2.destroyAllWindows() 
+# Reprojection Error
+mean_error = 0
+
+for i in range(len(objpoints)):
+    imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs[i], tvecs[i], mtx, dist)
+    error = cv2.norm(jpegpoints[i], imgpoints2, cv2.NORM_L2)/len(imgpoints2)
+    mean_error += error
+
+print( "Mean error: {}".format(mean_error/len(objpoints)) )
