@@ -1,6 +1,12 @@
 import numpy as np
 from numpy import linalg as LA
 
+def normalize(vector):
+    vector = np.array(vector)
+    normed = (vector - vector.mean(axis=0)) / vector.std(axis=0)
+    
+    return list(normed)
+
 ###### CONSTANTS ######
 # XY -> XZ -> YZ
 # XY-Plane
@@ -24,11 +30,19 @@ zw = []     #zw is z-axis coordinates array of image all points
 u  = []     #u is u axis coordinates of all image points
 v  = []     #v is v axis coordinates of all image points
 
-image2d_vectors = [[486,920], [526,927], [526,875], [448, 1007], [447,1033], [448,986]]     # 2d image coordinates [u,v] vector of all points
-realw_vectors   = [[1, 1, 0], [2, 1, 0], [2, 2, 0], [2, 0, 2], [3, 0, 3], [1, 0, 1]]        # 3d real world coordinates [x,y,z] vector of all points
+image2d_vectors1 = [[486,920], [526,927], [526,875], [448, 1007], [447,1033], [448,986]]     # 2d image coordinates [u,v] vector of all points
+realw_vectors1   = [[1, 1, 0], [2, 1, 0], [2, 2, 0], [2, 0, 2], [3, 0, 3], [1, 0, 1]]        # 3d real world coordinates [x,y,z] vector of all points
 
 # Normalize the vectors
+image2d_vectors = normalize(image2d_vectors1)
+realw_vectors   = normalize(realw_vectors1)
 
+# T and U vectors
+# T = np.dot(np.array(image2d_vectors), LA.inv(np.array(image2d_vectors1)))
+# U = np.dot(realw_vectors, LA.inv(realw_vectors1))
+
+# print(f"T vector for normalization:\n{T}")
+# print(f"U vector for normalization:\n{U}")
 
 image3d_vectors = [v + [1] for v in image2d_vectors] # 3d image coordinates [u,v,1] vector
 real4d_vectors  = [v + [1] for v in realw_vectors]   # 4d image coordinates [x,y,z,1] vector
@@ -36,7 +50,7 @@ real4d_vectors  = [v + [1] for v in realw_vectors]   # 4d image coordinates [x,y
 # image3d_vectors = [[486,920,1], [526,927,1], [526,875,1], [448, 1007,1], [447,1033,1], [448,986,1]]    #3d image coordinates [u,v,1] vector
 # real4d_vectors = [[1,1,0,1],[2,1,0,1], [2,2,0,1],[2,0,2,1], [3,0,3,1],[1,0,1,1]]                       #4d image coordinates [x,y,z,1] vector
 
-# Now creating a vector of points in x axis, y axis, z axis points separately 
+# Now creating a vector of points in x axis, y axis, z axis points separately
 for i in range(len(real4d_vectors)):
     xw.append(real4d_vectors[i][0])         # all x axis components
     yw.append(real4d_vectors[i][1])         # all y axis components

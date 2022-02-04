@@ -58,7 +58,7 @@ print(rvecs)
 print("Translation Matrix")
 print(tvecs)
 # and save it to a .yaml file
-with open("calibration_matrix_samsung.yaml", "w")as f:
+with open("calibration_matrix.yaml", "w")as f:
     yaml.dump(data, f)
 
 #undistort image
