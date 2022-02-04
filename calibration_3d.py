@@ -31,7 +31,8 @@ u  = []     #u is u axis coordinates of all image points
 v  = []     #v is v axis coordinates of all image points
 
 image2d_vectors = [[486,920], [526,927], [526,875], [448, 1007], [447,1033], [448,986]]     # 2d image coordinates [u,v] vector of all points
-realw_vectors   = [[1, 1, 0], [2, 1, 0], [2, 2, 0], [2, 0, 2], [3, 0, 3], [1, 0, 1]]        # 3d real world coordinates [x,y,z] vector of all points
+# realw_vectors   = [[1, 1, 0], [2, 1, 0], [2, 2, 0], [2, 0, 2], [3, 0, 3], [1, 0, 1]]        # 3d real world coordinates [x,y,z] vector of all points
+realw_vectors   = [[2.5, 2.5, 0], [5, 2.5, 0], [5, 5, 0], [5, 0, 5], [7.5, 0, 7.5], [2.5, 0, 2.5]]        # 3d real world coordinates [x,y,z] vector of all points
 
 # Normalize the vectors
 # image2d_vectors = normalize(image2d_vectors)
