@@ -17,8 +17,7 @@ def normalize(nd,x):
     return Tr, x
 
 def caliberate(xyz, uv):
-    xyz = N.asarray(xyz)
-    uv = N.asarray(uv)
+    xyz, uv = N.asarray(xyz), N.asarray(uv)
     np = xyz.shape[0]
 
     Txyz, xyzn = normalize(3, xyz)
@@ -72,7 +71,7 @@ if __name__ == "__main__":
     print(f"K Matrix is: \n{K}")
     print(f"Translational Vector is{trans}")
     print(f"Focal length x and Focal length y: {K[0][0]}, {K[1][1]}")
-    print(f"Ox and Oy: {K[0][-1]}, {K[1][-1]}")
+    print(f"Camera Center: Ox and Oy: {K[0][-1]}, {K[1][-1]}")
 
     # Testing
     image_coordinates = N.dot(P, N.array([2.5, 2.5, 0, 1]))
