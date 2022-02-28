@@ -46,7 +46,7 @@ class ANN(nn.Module):
 
 if __name__ == "__main__":
     batch_size = 64
-    epochs     = 10
+    epochs     = 100
     patience   = 6
     min_valid_loss = np.inf
     

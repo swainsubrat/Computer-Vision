@@ -43,8 +43,8 @@ def line_plot(train, valid, title, xl, yl, filename):
     plt.ylabel(yl)
     plt.legend()
 
-    # plt.show()
-    plt.savefig(filename, dpi=600)
+    plt.show()
+    # plt.savefig(filename, dpi=600)
 
     return
 
