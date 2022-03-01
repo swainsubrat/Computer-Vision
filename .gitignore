@@ -128,3 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 Img_Nokia3.1Plus/
+CNN/data/
