@@ -1,4 +1,3 @@
-from cProfile import label
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
@@ -47,6 +46,19 @@ def line_plot(train, valid, title, xl, yl, filename):
     # plt.savefig(filename, dpi=600)
 
     return
+
+def plot_accuracy(accuracies: List[List[float]],
+                  title, xl, yl,
+                  file_name: str=None) -> None:
+    fig, ax = plt.subplots()
+    ax.plot(accuracies[0], 'r', marker='o', label="Train")
+    ax.plot(accuracies[1], 'g', marker='o', label="Validation")
+    # ax.axis('equal')
+    ax.legend()
+    ax.set_xlabel(xl)
+    ax.set_ylabel(yl)
+    ax.set_title(title)
+    plt.savefig(f"./plots/{file_name}", dpi=600)
 
 if __name__ == "__main__":
     a = [1, 2, 3]

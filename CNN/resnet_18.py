@@ -4,9 +4,12 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 
 import numpy as np
 import torch.nn as nn
+import matplotlib.pyplot as plt
+
+plt.style.use('seaborn')
 
 from dataloader import load_cifar
-from utils import accuracy, line_plot
+from utils import accuracy, line_plot, plot_accuracy
 
 def save_checkpoint(epoch, classifier, optimizer, path='./models/checkpoint_resnet_ciphar.pth.tar'):
     state = {'epoch': epoch,
@@ -102,10 +105,13 @@ class ResNet(nn.Module):
 
 if __name__ == "__main__":
 
-    net = ResNet(block=ResNetBlock, layers=[2, 2, 2, 2], num_classes=10)
-    batch_size = 64
-    epochs     = 10
-    patience   = 5
+    # net = ResNet(block=ResNetBlock, layers=[2, 2, 2, 2], num_classes=10)
+    batch_size = 128
+    epochs     = 30
+    patience   = 6
+    init_lr    = 0.01
+    grad_clip  = 0.1
+    weight_decay = 1e-4
     min_valid_loss = np.inf
     
     print(f"Using {device} as the accelerator")
@@ -124,7 +130,13 @@ if __name__ == "__main__":
         classifier = ResNet(block=ResNetBlock, layers=[2, 2, 2, 2], num_classes=10)
         classifier.to(device)
         criterion = nn.CrossEntropyLoss().to(device)
-        optimizer = torch.optim.Adam(classifier.parameters(), lr=1e-3, weight_decay=1e-5)
+
+        # optimizer = torch.optim.Adam(classifier.parameters(), lr=init_lr, weight_decay=weight_decay)
+        # sched	  = torch.optim.lr_scheduler.OneCycleLR(optimizer, init_lr, epochs=epochs, steps_per_epoch=len(train_dataloader))
+        #optimizer = torch.optim.SGD(classifier.parameters(), lr = 0.01, momentum = 0.9, weight_decay = 5e-4)
+
+        optimizer = torch.optim.SGD(classifier.parameters(), lr=init_lr, momentum=0.9, weight_decay=5e-4)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
         train_los = []
         valid_los = []
@@ -136,7 +148,8 @@ if __name__ == "__main__":
             y_hat, y = [], []
             classifier.train()
             for i, (image, label) in enumerate(train_dataloader):
-                image.to(device)
+                image = image.to(device)
+                label = label.to(device)
                 out = classifier(image)
                 
                 loss = criterion(out, label)
@@ -159,7 +172,8 @@ if __name__ == "__main__":
             y_hat, y = [], []
 
             for i, (image, label) in enumerate(valid_dataloader):
-                image.to(device)
+                image = image.to(device)
+                label = label.to(device)
                 out = classifier(image)
                 loss = criterion(out, label)
                 valid_loss = loss.item() * batch_size
@@ -169,6 +183,8 @@ if __name__ == "__main__":
                 y_hat.extend(idxs.tolist())
             
             valid_acc.append(accuracy(y, y_hat))
+            
+            scheduler.step()
                 
             print(
                 f'Epoch {epoch+1} \t\t Training Loss: {train_loss / len(train_dataloader): .4f} \
@@ -184,29 +200,26 @@ if __name__ == "__main__":
             
             train_los.append(train_loss / len(train_dataloader))
             valid_los.append(valid_loss / len(valid_dataloader))
-            # print(train_los)
-            # print(train_acc)
             
             print(f"Epochs since last improvement: {epoch_since_last_improve}")
             if epoch_since_last_improve > patience:
                 print("Early stopping! Breaking out of loop....")
                 break
     
-        line_plot(train_acc, valid_acc, "Accuracy vs Epochs", "Epochs", "Accuracy", "./plots/mnist_reg_acc.png")
-        line_plot(train_los, valid_los, "Loss vs Epochs", "Epochs", "Loss", "./plots/mnist_reg_loss.png")
+        # line_plot(train_acc, valid_acc, "Accuracy vs Epochs", "Epochs", "Accuracy", "./plots/mnist_reg_acc.png")
+        # line_plot(train_los, valid_los, "Loss vs Epochs", "Epochs", "Loss", "./plots/mnist_reg_loss.png")
+        plot_accuracy([train_acc, valid_acc], "Accuracy vs Epochs", "Epochs", "Accuracy", "resnet_acc.png")
+        plot_accuracy([train_los, valid_los], "Loss vs Epochs", "Epochs", "Loss", "resnet_loss.png")
+
+    print(f"Train Accuracy: {train_acc[-1]}")
 
     y_hat, y = [], []
     for i, (image, label) in enumerate(test_dataloader):
-        image.to(device)
+        image = image.to(device)
         out = classifier(image)
         prob, idxs = torch.max(out, dim=1)
 
         y.extend(label.tolist())
         y_hat.extend(idxs.tolist())
 
-    print(accuracy(y, y_hat))
-
-    # from torchvision import models
-    # print(models.resnet18())
-
-    # print(net == models.resnet18())
+    print(f"Test Accuracy: {accuracy(y, y_hat)}")
