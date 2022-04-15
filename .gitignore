@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 Img_Nokia3.1Plus/
 CNN/data/
+Transformer-FRCNN/data/
+Transformer-FRCNN/saved_models/
