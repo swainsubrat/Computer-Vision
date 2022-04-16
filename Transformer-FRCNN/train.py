@@ -40,7 +40,7 @@ torch.backends.cudnn.benchmark = False
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 print(f"Using {device} as an accelerator :)")
 
-train_loader, val_loader, test_loader = load_cifar(batch_size=128)
+train_loader, val_loader, test_loader = load_cifar(batch_size=64)
 
 class ViT(pl.LightningModule):
     
@@ -120,7 +120,7 @@ if __name__ == "__main__":
                                 'dropout': 0.2
                             },
                             lr=3e-4)
-    # pretrained_filename = os.path.join(CHECKPOINT_PATH, "ViT/lightning_logs/version_0/checkpoints/epoch=178-step=125837.ckpt")
+    # pretrained_filename = os.path.join(CHECKPOINT_PATH, "ViT/lightning_logs/version_5/checkpoints/epoch=108-step=76627.ckpt")
     # model = ViT.load_from_checkpoint(pretrained_filename)
 
     # trainer = pl.Trainer(default_root_dir=os.path.join(CHECKPOINT_PATH, "ViT"), 
@@ -130,7 +130,8 @@ if __name__ == "__main__":
     #                                 LearningRateMonitor("epoch")],
     #                      progress_bar_refresh_rate=1)
 
+    # train_result = trainer.test(model, dataloaders=train_loader, verbose=False)
     # val_result = trainer.test(model, dataloaders=val_loader, verbose=False)
     # test_result = trainer.test(model, dataloaders=test_loader, verbose=False)
-    # results = {"test": test_result[0]["test_acc"], "val": val_result[0]["test_acc"]}
+    # results = {"train": train_result[0]["test_acc"], "test": test_result[0]["test_acc"], "val": val_result[0]["test_acc"]}
     print("ViT results", results)

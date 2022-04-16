@@ -24,14 +24,6 @@ def img_to_patch(x, patch_size, flatten_channels=True):
 class AttentionBlock(nn.Module):
     
     def __init__(self, embed_dim, hidden_dim, num_heads, dropout=0.0):
-        """
-        Inputs:
-            embed_dim - Dimensionality of input and attention feature vectors
-            hidden_dim - Dimensionality of hidden layer in feed-forward network 
-                         (usually 2-4x larger than embed_dim)
-            num_heads - Number of heads to use in the Multi-Head Attention block
-            dropout - Amount of dropout to apply in the feed-forward network
-        """
         super().__init__()
         
         self.layer_norm_1 = nn.LayerNorm(embed_dim)
@@ -55,20 +47,6 @@ class AttentionBlock(nn.Module):
 class VisionTransformer(nn.Module):
     
     def __init__(self, embed_dim, hidden_dim, num_channels, num_heads, num_layers, num_classes, patch_size, num_patches, dropout=0.0):
-        """
-        Inputs:
-            embed_dim - Dimensionality of the input feature vectors to the Transformer
-            hidden_dim - Dimensionality of the hidden layer in the feed-forward networks
-                         within the Transformer
-            num_channels - Number of channels of the input (3 for RGB)
-            num_heads - Number of heads to use in the Multi-Head Attention block
-            num_layers - Number of layers to use in the Transformer
-            num_classes - Number of classes to predict
-            patch_size - Number of pixels that the patches have per dimension
-            num_patches - Maximum number of patches an image can have
-            dropout - Amount of dropout to apply in the feed-forward network and 
-                      on the input encoding
-        """
         super().__init__()
         
         self.patch_size = patch_size

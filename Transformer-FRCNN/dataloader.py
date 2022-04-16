@@ -1,8 +1,13 @@
+import torch
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
+
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import random_split
 
+from dataset import PascalVOCDataset, PascalVOCDataset2
+
+data_folder = "./"
 
 def load_mnist(batch_size: int=64, root: str='./data/'):
     """
@@ -51,4 +56,23 @@ def load_cifar(batch_size: int=64, root: str="./data/", return_set=False):
         return valid_data
 
     return train_dataloader, valid_dataloader, test_dataloader
-    
+
+
+def load_pascal(batch_size=64):
+    train_dataset = PascalVOCDataset(data_folder,
+                                     split='train',
+                                     keep_difficult=True)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
+                                               collate_fn=train_dataset.collate_fn, num_workers=4,
+                                               pin_memory=True)
+    test_dataset = PascalVOCDataset2(data_folder,
+                                     split='test',
+                                     keep_difficult=True)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False,
+                                              collate_fn=test_dataset.collate_fn, num_workers=4, 
+                                              pin_memory=True)
+
+    return train_loader, test_loader
+
+if __name__ == "__main__":
+    load_pascal(1)
